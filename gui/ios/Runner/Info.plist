@@ -4,6 +4,10 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Aplikasi memakai kamera untuk memotret anjing dan mendeteksi emosinya.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Aplikasi memakai galeri untuk memilih foto anjing yang akan dideteksi.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

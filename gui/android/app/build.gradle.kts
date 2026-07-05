@@ -43,3 +43,15 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+// tflite_flutter 0.11 menarik TFLite 2.11.0 yg namespace-nya bentrok
+// (lite/lite-gpu/lite-api pakai 'org.tensorflow.lite' sama) -> ditolak AGP baru.
+// Paksa ke 2.14.0 yang namespace tiap modulnya sudah unik.
+configurations.all {
+    resolutionStrategy {
+        force("org.tensorflow:tensorflow-lite:2.14.0")
+        force("org.tensorflow:tensorflow-lite-api:2.14.0")
+        force("org.tensorflow:tensorflow-lite-gpu:2.14.0")
+        force("org.tensorflow:tensorflow-lite-gpu-api:2.14.0")
+    }
+}
