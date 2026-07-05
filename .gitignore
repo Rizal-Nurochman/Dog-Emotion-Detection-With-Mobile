@@ -3,6 +3,7 @@ outputs/
 *.h5
 *.keras
 *.tflite
+.venv/
 __pycache__/
 .ipynb_checkpoints/
 
