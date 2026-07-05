@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'main.dart' show kPrimary, kAccent;
 import 'camera.dart';
+import 'about.dart';
 
 /// Homepage bergaya mockup (Menu.jpeg) + bottom navbar (Navbar.jpeg).
 /// Hanya tombol tengah navbar yang aktif → buka kamera.
@@ -11,6 +12,13 @@ class HomePage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => const CameraPage()),
+    );
+  }
+
+  void _openAbout(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AboutPage()),
     );
   }
 
@@ -39,7 +47,10 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: _Navbar(onScan: () => _openCamera(context)),
+      bottomNavigationBar: _Navbar(
+        onScan: () => _openCamera(context),
+        onAbout: () => _openAbout(context),
+      ),
     );
   }
 
@@ -149,7 +160,8 @@ class HomePage extends StatelessWidget {
 /// Item lain hanya dekorasi — tidak aktif sesuai permintaan.
 class _Navbar extends StatelessWidget {
   final VoidCallback onScan;
-  const _Navbar({required this.onScan});
+  final VoidCallback onAbout;
+  const _Navbar({required this.onScan, required this.onAbout});
 
   @override
   Widget build(BuildContext context) {
@@ -173,12 +185,15 @@ class _Navbar extends StatelessWidget {
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: const [
-                  _NavItem(icon: Icons.home_rounded, label: 'Home', active: true),
-                  _NavItem(icon: Icons.article_outlined, label: 'News'),
-                  SizedBox(width: 64), // ruang tombol tengah
-                  _NavItem(icon: Icons.pets_outlined, label: 'Pets'),
-                  _NavItem(icon: Icons.person_outline, label: 'Profile'),
+                children: [
+                  const _NavItem(
+                      icon: Icons.home_rounded, label: 'Home', active: true),
+                  const SizedBox(width: 64), // ruang tombol tengah
+                  _NavItem(
+                    icon: Icons.info_outline,
+                    label: 'About',
+                    onTap: onAbout,
+                  ),
                 ],
               ),
             ),
@@ -220,19 +235,23 @@ class _NavItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final bool active;
-  const _NavItem({required this.icon, required this.label, this.active = false});
+  final VoidCallback? onTap;
+  const _NavItem({required this.icon, required this.label, this.active = false, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final color = active ? kPrimary : Colors.grey;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(icon, color: color, size: 24),
-        const SizedBox(height: 2),
-        Text(label, style: TextStyle(color: color, fontSize: 11)),
-      ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 24),
+          const SizedBox(height: 2),
+          Text(label, style: TextStyle(color: color, fontSize: 11)),
+        ],
+      ),
     );
   }
 }

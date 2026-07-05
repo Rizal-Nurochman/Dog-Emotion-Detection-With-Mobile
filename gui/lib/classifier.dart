@@ -43,7 +43,9 @@ class Classifier {
 
     final resized = img.copyResize(decoded, width: _size, height: _size);
 
-    // Input [1,224,224,3] float32, RGB, normalisasi (p/127.5)-1.0 — lihat §3 handoff.
+    // Input [1,224,224,3] float32, RGB, piksel MENTAH 0..255.
+    // Normalisasi (preprocess_input MobileNetV2) sudah di DALAM model .tflite,
+    // jadi JANGAN dinormalisasi lagi di sini (kalau dobel → semua prediksi sama).
     final input = List.generate(
       1,
       (_) => List.generate(
@@ -51,9 +53,9 @@ class Classifier {
         (y) => List.generate(_size, (x) {
           final p = resized.getPixel(x, y);
           return [
-            (p.r / 127.5) - 1.0,
-            (p.g / 127.5) - 1.0,
-            (p.b / 127.5) - 1.0,
+            p.r.toDouble(),
+            p.g.toDouble(),
+            p.b.toDouble(),
           ];
         }),
       ),

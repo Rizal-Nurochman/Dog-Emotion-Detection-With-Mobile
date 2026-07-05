@@ -28,11 +28,12 @@ Kesalahan di sini = model akurat di notebook tapi **ngawur di HP**. Urutan:
 
 1. **Resize** gambar ke **224 × 224** piksel.
 2. **Urutan channel RGB** (bukan BGR).
-3. **Normalisasi ke rentang -1..1**:
-   ```
-   pixel_normalized = (pixel / 127.5) - 1.0
-   ```
-   Ini `preprocess_input` MobileNetV2. **BUKAN `pixel / 255`** (itu untuk model CNN, bukan model ini).
+3. **JANGAN normalisasi** — beri piksel **mentah 0..255** (sebagai float).
+
+> **PENTING:** Normalisasi `preprocess_input` MobileNetV2 (`x/127.5 - 1`) **sudah tertanam
+> di dalam model `.tflite`** (terlihat sebagai layer `true_divide` & `subtract` di
+> `model.summary()`). Jika kamu menormalisasi lagi di sisi app → normalisasi dobel →
+> semua gambar runtuh ke satu nilai → **model selalu memprediksi kelas yang sama**.
 
 Contoh (pseudo-Dart):
 ```dart
@@ -40,9 +41,9 @@ Contoh (pseudo-Dart):
 final input = List.generate(224, (y) => List.generate(224, (x) {
   final p = img.getPixel(x, y);
   return [
-    (p.r / 127.5) - 1.0,
-    (p.g / 127.5) - 1.0,
-    (p.b / 127.5) - 1.0,
+    p.r.toDouble(),   // mentah 0..255, TANPA /127.5-1
+    p.g.toDouble(),
+    p.b.toDouble(),
   ];
 }));
 // bentuk akhir tensor: [1, 224, 224, 3]
@@ -84,9 +85,10 @@ menampilkan confidence agar user tahu tingkat keyakinan model.
 
 - [ ] `model_final.tflite` + `labels.txt` masuk ke assets app
 - [ ] Resize input ke 224×224, RGB
-- [ ] Normalisasi `(pixel/127.5) - 1` (bukan `/255`)
+- [ ] Beri piksel **mentah 0..255** (JANGAN `/127.5-1` — sudah di dalam model)
 - [ ] Tensor input berbentuk `[1,224,224,3]` float32
 - [ ] Baca output `[1,4]`, `argmax`, map ke label
 - [ ] Uji 1 gambar per kelas, cocokkan dengan prediksi notebook sebelum lanjut
 
-Kalau prediksi konsisten salah/ke satu kelas saja → hampir pasti bug normalisasi (§3).
+Kalau prediksi konsisten salah/ke satu kelas saja → hampir pasti **normalisasi dobel** (§3):
+hapus `/127.5-1` di sisi app, beri piksel mentah 0..255.

@@ -34,7 +34,8 @@ Regenerate grafik komparasi: `python src/make_comparison.py`
 ## Handoff model → GUI
 File yang dikirim ke tim GUI: `models/model_final.tflite` + `models/labels.txt`
 (keduanya di-`.gitignore`, kirim manual — bukan lewat git).
-- Input **224×224×3**, normalisasi **`(pixel/127.5) - 1`** (rentang -1..1, `preprocess_input` MobileNetV2 — bukan `/255`).
+- Input **224×224×3**, beri piksel **mentah 0..255** (jangan dinormalisasi di app —
+  `preprocess_input` MobileNetV2 sudah tertanam di dalam model; kalau dobel → prediksi selalu 1 kelas).
 - Output TFLite **sudah softmax** (probabilitas 0..1) → di sisi app cukup `argmax`.
 - Urutan label sesuai `labels.txt`: `angry, happy, relaxed, sad`.
 
