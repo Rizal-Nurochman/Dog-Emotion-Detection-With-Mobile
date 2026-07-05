@@ -1,7 +1,7 @@
 seed: 42
 
 data:
-  raw_dir: "Final dog dataset/Final dog dataset" 
+  raw_dir: "Final dog dataset" 
   splits_dir: "data/splits"
   classes: [angry, happy, relaxed, sad]
   split: {train: 0.8, val: 0.1, test: 0.1} 
