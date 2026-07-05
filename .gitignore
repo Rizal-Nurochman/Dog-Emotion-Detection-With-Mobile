@@ -1,0 +1,12 @@
+# data & artefak berat jangan masuk git
+data/splits/
+outputs/
+*.h5
+*.keras
+*.tflite
+__pycache__/
+.ipynb_checkpoints/
+
+# dataset asli: simpan di rilis/Drive, bukan di repo (opsional, hapus baris ini kalau wajib di-commit)
+Final dog dataset/
+dataset.csv

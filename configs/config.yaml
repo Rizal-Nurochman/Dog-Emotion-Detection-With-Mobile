@@ -1,0 +1,16 @@
+seed: 42
+
+data:
+  raw_dir: "Final dog dataset/Final dog dataset" 
+  splits_dir: "data/splits"
+  classes: [angry, happy, relaxed, sad]
+  split: {train: 0.8, val: 0.1, test: 0.1} 
+
+image:
+  size: 224          
+
+train:
+  batch_size: 32
+  epochs: 30
+  lr: 0.001
+  early_stopping_patience: 5
