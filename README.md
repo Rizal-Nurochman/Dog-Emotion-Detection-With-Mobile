@@ -15,13 +15,36 @@ yang dibandingkan, lalu model terbaik dideploy ke **GUI mobile** (TFLite + Flutt
 
 Metrik komparasi: Accuracy, Precision, Recall, F1-Score.
 
+## Hasil Komparasi (test set, 386 gambar)
+
+| Metrik (macro avg) | CNN scratch | MobileNetV2 |
+|--------------------|:-----------:|:-----------:|
+| Accuracy           | 0.655       | **0.904**   |
+| Precision          | 0.658       | **0.904**   |
+| Recall             | 0.655       | **0.903**   |
+| F1-Score           | 0.655       | **0.904**   |
+
+**MobileNetV2 = model final** (+25% akurasi) → diexport ke `models/model_final.tflite` untuk mobile.
+
+Grafik pendukung di `reports/figures/`:
+`{cnn,mobilenet}_training.png` (acc/loss), `{cnn,mobilenet}_confusion.png`,
+`model_comparison.png` (4 metrik), `f1_per_class.png`.
+Regenerate grafik komparasi: `python src/make_comparison.py`
+
+## Handoff model → GUI
+File yang dikirim ke tim GUI: `models/model_final.tflite` + `models/labels.txt`
+(keduanya di-`.gitignore`, kirim manual — bukan lewat git).
+- Input **224×224×3**, normalisasi **`(pixel/127.5) - 1`** (rentang -1..1, `preprocess_input` MobileNetV2 — bukan `/255`).
+- Output TFLite **sudah softmax** (probabilitas 0..1) → di sisi app cukup `argmax`.
+- Urutan label sesuai `labels.txt`: `angry, happy, relaxed, sad`.
+
 ## Struktur
 ```
 data/raw · data/splits   data mentah & hasil split
 notebooks/               EDA + training (Colab GPU)
-src/                     data_prep, models, train, evaluate
-models/                  .keras + model_final.tflite
-reports/figures          grafik acc/loss, confusion matrix
+src/                     data_prep, make_comparison
+models/                  .keras + model_final.tflite + labels.txt
+reports/figures          grafik acc/loss, confusion matrix, komparasi
 gui/                     app Flutter
 configs/config.yaml      semua hyperparameter
 ```
